@@ -9,19 +9,39 @@ BEGIN {
 	our @EXPORT = qw( switch );
 	
 	use Parse::Keyword { switch => \&_parse_switch };
-	
+	use Devel::LexAlias qw( lexalias );
+	use PadWalker qw( peek_my );	
 	use match::simple qw( match );
 	
 	sub switch
 	{
-		my ($expr, $cases, $default) = @_;
+		my ($pkg, $expr, $comparator, $cases, $default) = @_;
 		
-		my $var = $expr->();
-		local $_ = $var;
+		my $pad = peek_my(1);
+		my $var = defined($expr)
+			? do {
+				lexalias($expr, $_, $pad->{$_}) for keys %$pad;
+				$expr->();
+			}
+			: $_;
+		Internals::SvREADONLY($var, 1);
+		local *_ = \$var;
+		
+		my $match = \&match::simple::match;
+		if ($comparator)
+		{
+			$match = sub {
+				no strict 'refs';
+				local *{"$pkg\::a"} = \ $_[0];
+				local *{"$pkg\::b"} = \ $_[1];
+				$comparator->(@_);
+			};
+		}
 		
 		CASE: for my $case ( @$cases )
 		{
 			my ($type, $condition, $block) = @$case;
+			lexalias($condition, $_, $pad->{$_}) for keys %$pad;
 			
 			my $matched = 0;
 			if ($type eq 'block')
@@ -33,14 +53,19 @@ BEGIN {
 				my @terms = $condition->();
 				TERM: for my $term (@terms)
 				{
-					match($var, $term) ? (++$matched && last TERM) : next TERM;
+					$match->($var, $term) ? (++$matched && last TERM) : next TERM;
 				}
 			}
 			
+			lexalias($block, $_, $pad->{$_}) for keys %$pad;
 			return $block->() if $matched;
 		}
 		
-		return $default->() if $default;
+		if ($default)
+		{
+			lexalias($default, $_, $pad->{$_}) for keys %$pad;
+			return $default->();
+		}
 		return;
 	}
 	
@@ -62,7 +87,16 @@ BEGIN {
 		}
 		else
 		{
-			$expr = sub { our $_ };
+			$expr = undef;
+		}
+		
+		my $comparator;
+		if (lex_peek(2) eq 'on')
+		{
+			lex_read(2);
+			lex_read_space;
+			$comparator = parse_block;
+			lex_read_space;
 		}
 		
 		die "syntax error; expected block" unless lex_peek eq '{';
@@ -90,7 +124,7 @@ BEGIN {
 		lex_read(1);
 		
 		return (
-			sub { ($expr, \@cases, $default) },
+			sub { (scalar(compiling_package), $expr, $comparator, \@cases, $default) },
 			1,
 		);
 	}
@@ -120,6 +154,16 @@ BEGIN {
 		
 		else
 		{
+			if (lex_peek(1) eq '/')
+			{
+				lex_stuff('qr');
+			}
+			elsif (lex_peek(2) =~ /m\W/)
+			{
+				lex_read(1);
+				lex_stuff('qr');
+			}
+			
 			$type = 'simple-term';
 			$expr = parse_fullexpr;
 			lex_read_space;
@@ -157,14 +201,20 @@ BEGIN {
 
 use v5.14;
 use PerlX::Switch;
+no warnings 'once';
 
-for (qw/ foo bar baz quux /)
+sub xyz
 {
+	$_ = shift;
 	switch {
-		case "foo":            say "where?";
-		case ("bar")         { say "here,";  1 }
-		case { $_ eq "baz" } { say "there,"; 2 }
-		else                 { say "and everywhere"; 99 }
+		case m(foo):          say "where?";
+		case ("bar")         { say "here";  1 }
+		case { $_ eq "baz" } { say "there"; 2 }
+		else          :        say($_)+99;
 	}
 }
 
+xyz("foo");
+xyz("bar");
+xyz("baz");
+xyz("everywhere");
