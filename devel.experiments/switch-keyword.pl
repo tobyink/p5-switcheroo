@@ -1,86 +1,96 @@
+use strict;
+use warnings;
+
 BEGIN {
 	package PerlX::Switch;
+	$INC{'PerlX/Switch.pm'} = __FILE__;
 	
 	use Exporter 'import';
-	our @EXPORT = qw( switch case );
+	our @EXPORT = qw( switch );
 	
-	use Parse::Keyword {
-		switch    => \&_parse_switch,
-		case      => \&_parse_case,
-	};
+	use Parse::Keyword { switch => \&_parse_switch };
 	
 	use match::simple qw( match );
 	
-	our $R;
-	
 	sub switch
 	{
-		my ($sigil, $expr, $block) = @_;
+		my ($expr, $cases, $default) = @_;
 		
-		local *_ = \(
-			$sigil eq '%' ? +{ $expr->() } :
-			$sigil eq '@' ? +[ $expr->() ] :
-			$expr->()
-		);
+		my $var = $expr->();
+		local $_ = $var;
 		
-		local $R;
-		$block->();
-		return ${ $R || \undef };
-	}
-	
-	sub case
-	{
-		my ($type, $expr, $block) = @_;
-		return if $R;
-		
-		if ($type eq 'term' or $type eq 'simple-term')
+		CASE: for my $case ( @$cases )
 		{
-			my @terms = $expr->();
-			for my $term (@terms)
+			my ($type, $condition, $block) = @$case;
+			
+			my $matched = 0;
+			if ($type eq 'block')
 			{
-				next unless match($_, $term);
-				$R = do { my $x = $block->(); \$x };
-				return;
+				$matched = !!$condition->();
 			}
-			return;
-		}
-		elsif ($type eq 'block')
-		{
-			$R = do { my $x = $block->(); \$x } if $expr->();
-			return;
+			else
+			{
+				my @terms = $condition->();
+				TERM: for my $term (@terms)
+				{
+					match($var, $term) ? (++$matched && last TERM) : next TERM;
+				}
+			}
+			
+			return $block->() if $matched;
 		}
 		
-		die;
+		return $default->() if $default;
+		return;
 	}
 	
 	sub _parse_switch
 	{
-		my ($expr, $sigil);
+		my ($expr);
 		
 		lex_read_space;
-		die "syntax error; expected open parenthesis" unless lex_peek eq '(';
-		lex_read(1);
-		lex_read_space;
 		
-		if (lex_peek eq '@' or lex_peek eq '%')
+		if (lex_peek eq '(')
 		{
-			$sigil = lex_peek;
+			lex_read(1);
+			lex_read_space;
 			$expr = parse_fullexpr;
+			lex_read_space;
+			die "syntax error; expected close parenthesis" unless lex_peek eq ')';
+			lex_read(1);
+			lex_read_space;
 		}
 		else
 		{
-			$expr = parse_fullexpr;
+			$expr = sub { our $_ };
 		}
 		
-		lex_read_space;
-		die "syntax error; expected close parenthesis" unless lex_peek eq ')';
+		die "syntax error; expected block" unless lex_peek eq '{';
 		lex_read(1);
 		lex_read_space;
-		die "syntax error; expected block" unless lex_peek eq '{';
-		my $block = parse_block;
 		
-		return(
-			sub { ($sigil, $expr, $block) },
+		my @cases;
+		while ( lex_peek(4) eq 'case' )
+		{
+			lex_read(4);
+			push @cases, _parse_case();
+			lex_read_space;
+		}
+		
+		my $default;
+		if ( lex_peek(4) eq 'else' )
+		{
+			lex_read(4);
+			lex_read_space;
+			$default = _parse_consequence();
+			lex_read_space;
+		}
+		
+		die "syntax error; expected end of switch block" unless lex_peek eq '}';
+		lex_read(1);
+		
+		return (
+			sub { ($expr, \@cases, $default) },
 			1,
 		);
 	}
@@ -113,29 +123,48 @@ BEGIN {
 			$type = 'simple-term';
 			$expr = parse_fullexpr;
 			lex_read_space;
-			die "syntax error; expected colon" unless lex_peek eq ':';
-			lex_read(1);
-			lex_read_space;
 		}
 		
-		my $block = $type eq 'simple-term' ? parse_fullexpr : parse_block;
+		my $block = _parse_consequence();		
+		return [ $type, $expr, $block ];
+	}
+
+	sub _parse_consequence
+	{
+		my ($expr, $type);
+		lex_read_space;
 		
-		return(
-			sub { ($type, $expr, $block) },
-			$type ne 'simple-term',
-		);
+		my $block;
+		if (lex_peek eq ':')
+		{
+			lex_read(1);
+			lex_read_space;
+			$block = parse_fullexpr;
+			lex_read_space;
+			die "syntax error; expected semicolon" unless lex_peek eq ';' || lex_peek eq '}';
+			lex_read(1) && lex_read_space while lex_peek eq ';';
+		}
+		else
+		{
+			$block = parse_block;
+			lex_read_space;
+			lex_read(1) && lex_read_space while lex_peek eq ';';
+		}
+		
+		return $block;
 	}
 };
 
 use v5.14;
-no thanks 'PerlX::Switch';
 use PerlX::Switch;
 
-say do {
-	switch ("foo") {
-		case ("bar")         { say "bar";1 }
-		case { $_ eq "baz" } { say "baz";2 }
-		case 99, "foo", 42:    say "foo";
+for (qw/ foo bar baz quux /)
+{
+	switch {
+		case "foo":            say "where?";
+		case ("bar")         { say "here,";  1 }
+		case { $_ eq "baz" } { say "there,"; 2 }
+		else                 { say "and everywhere"; 99 }
 	}
-};
+}
 
