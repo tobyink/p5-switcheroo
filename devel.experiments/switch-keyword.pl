@@ -6,11 +6,12 @@ BEGIN {
 	$INC{'PerlX/Switch.pm'} = __FILE__;
 	
 	use Exporter 'import';
-	our @EXPORT = qw( switch );
+	our @EXPORT    = qw( switch );
+	our @EXPORT_OK = qw( match );
 	
 	use Parse::Keyword { switch => \&_parse_switch };
 	use Devel::LexAlias qw( lexalias );
-	use PadWalker qw( peek_my );	
+	use PadWalker qw( peek_my );
 	use match::simple qw( match );
 	
 	sub switch
@@ -71,7 +72,8 @@ BEGIN {
 	
 	sub _parse_switch
 	{
-		my ($expr);
+		my ($expr, $comparator, @cases, $default);
+		my $is_statement = 1;
 		
 		lex_read_space;
 		
@@ -85,12 +87,7 @@ BEGIN {
 			lex_read(1);
 			lex_read_space;
 		}
-		else
-		{
-			$expr = undef;
-		}
-		
-		my $comparator;
+
 		if (lex_peek(2) eq 'on')
 		{
 			lex_read(2);
@@ -98,12 +95,18 @@ BEGIN {
 			$comparator = parse_block;
 			lex_read_space;
 		}
-		
+
+		if (lex_peek(2) eq 'do')
+		{
+			lex_read(2);
+			lex_read_space;
+			$is_statement = 0;
+		}
+
 		die "syntax error; expected block" unless lex_peek eq '{';
 		lex_read(1);
 		lex_read_space;
 		
-		my @cases;
 		while ( lex_peek(4) eq 'case' )
 		{
 			lex_read(4);
@@ -111,7 +114,6 @@ BEGIN {
 			lex_read_space;
 		}
 		
-		my $default;
 		if ( lex_peek(4) eq 'else' )
 		{
 			lex_read(4);
@@ -125,7 +127,7 @@ BEGIN {
 		
 		return (
 			sub { (scalar(compiling_package), $expr, $comparator, \@cases, $default) },
-			1,
+			$is_statement,
 		);
 	}
 
@@ -169,7 +171,7 @@ BEGIN {
 			lex_read_space;
 		}
 		
-		my $block = _parse_consequence();		
+		my $block = _parse_consequence();
 		return [ $type, $expr, $block ];
 	}
 
@@ -212,6 +214,7 @@ sub xyz
 		case { $_ eq "baz" } { say "there"; 2 }
 		else          :        say($_)+99;
 	}
+	1;
 }
 
 xyz("foo");
