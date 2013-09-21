@@ -8,7 +8,7 @@
 	:homepage             <https://metacpan.org/release/PerlX-Switch>;
 	:download-page        <https://metacpan.org/release/PerlX-Switch>;
 	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=PerlX-Switch>;
-#	:repository           [ a :GitRepository; :browse <https://github.com/tobyink/p5-perlx-switch> ];
+	:repository           [ a :GitRepository; :browse <https://github.com/tobyink/p5-perlx-switch> ];
 	:created              2013-09-01;
 	:license              <http://dev.perl.org/licenses/>;
 	:maintainer           cpan:TOBYINK;
