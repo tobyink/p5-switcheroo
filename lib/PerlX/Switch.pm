@@ -137,8 +137,10 @@ sub _parse_switch
 	die "syntax error; expected end of switch block" unless lex_peek eq '}';
 	lex_read(1);
 	
+	my $pkg = compiling_package;
+	
 	return (
-		sub { (scalar(compiling_package), $expr, $comparator, \@cases, $default) },
+		sub { ($pkg, $expr, $comparator, \@cases, $default) },
 		$is_statement,
 	);
 }
