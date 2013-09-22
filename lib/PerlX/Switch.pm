@@ -231,6 +231,10 @@ PerlX::Switch - yet another switch statement for Perl
       default:    $day_type = "weekday";
    }
 
+=head1 STATUS
+
+Experimental.
+
 =head1 DESCRIPTION
 
 This module provides Perl with a switch statement. It's more reliable than
