@@ -9,6 +9,7 @@ our $VERSION   = '0.001';
 our @EXPORT    = qw( switch );
 our @EXPORT_OK = qw( match );
 
+use Devel::Caller qw( caller_args );
 use Devel::LexAlias qw( lexalias );
 use Exporter qw( import );
 use match::simple qw( match );
@@ -18,12 +19,13 @@ use Parse::Keyword { switch => \&_parse_switch };
 sub switch
 {
 	my ($pkg, $expr, $comparator, $cases, $default) = @_;
+	my @args = @_ = caller_args(1);
 	
 	my $pad = peek_my(1);
 	my $var = defined($expr)
 		? do {
 			lexalias($expr, $_, $pad->{$_}) for keys %$pad;
-			$expr->();
+			$expr->(@args);
 		}
 		: $_;
 	Internals::SvREADONLY($var, 1);
@@ -36,7 +38,7 @@ sub switch
 			no strict 'refs';
 			local *{"$pkg\::a"} = \ $_[0];
 			local *{"$pkg\::b"} = \ $_[1];
-			$comparator->(@_);
+			$comparator->(@args);
 		};
 	}
 	
@@ -48,7 +50,7 @@ sub switch
 		my $matched = 0;
 		if ($type eq 'block')
 		{
-			$matched = !!$condition->();
+			$matched = !!$condition->(@args);
 		}
 		else
 		{
