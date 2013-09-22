@@ -11,10 +11,17 @@ our @EXPORT_OK = qw( match );
 
 use Devel::Caller qw( caller_args );
 use Devel::LexAlias qw( lexalias );
-use Exporter qw( import );
+use Exporter qw( );
 use match::simple qw( match );
 use PadWalker qw( peek_my );
 use Parse::Keyword { switch => \&_parse_switch };
+
+sub import
+{
+	my $pkg = caller;
+	eval qq[ package $pkg; our \$a; our \$b; ];
+	goto \&Exporter::import;
+}
 
 sub switch
 {

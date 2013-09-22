@@ -19,4 +19,5 @@
 		item "Document the status of this distribution."^^Documentation;
 		item "The `if` option is now called `mode`."^^Change;
 		item "Document `$a` and `$b` better."^^Documentation;
+		item "Prevent warnings from `$a` and `$b` using a little trick in `import`."^^Change;
 	].
