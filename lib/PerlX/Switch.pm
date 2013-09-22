@@ -327,7 +327,8 @@ for matching:
       case 1:      say "greater than 1";
    }
 
-C<< $a >> is the TERM and C<< $b >> is the EXPR.
+C<< $a >> is the TERM and C<< $b >> is the EXPR. These are the same special
+package variables used by C<sort> and by C<reduce> from [mod://List::Util].
 
 =head2 Switch expressions
 

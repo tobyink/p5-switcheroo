@@ -18,4 +18,5 @@
 	changeset [
 		item "Document the status of this distribution."^^Documentation;
 		item "The `if` option is now called `mode`."^^Change;
+		item "Document `$a` and `$b` better."^^Documentation;
 	].
