@@ -60,13 +60,13 @@ sub switch
 		}
 		
 		lexalias($block, $_, $pad->{$_}) for keys %$pad;
-		return $block->() if $matched;
+		goto $block if $matched;
 	}
 	
 	if ($default)
 	{
 		lexalias($default, $_, $pad->{$_}) for keys %$pad;
-		return $default->();
+		goto $default;
 	}
 	return;
 }
