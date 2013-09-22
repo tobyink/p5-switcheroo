@@ -21,3 +21,10 @@
 		item "Document `$a` and `$b` better."^^Documentation;
 		item "Prevent warnings from `$a` and `$b` using a little trick in `import`."^^Change;
 	].
+
+`PerlX-Switch 0.004 cpan:TOBYINK`
+	issued  2013-09-22;
+	changeset [
+		item "Minor pod syntax fix."^^Bugfix;
+		item "Use a newer version of Dist::Inkt."^^Packaging;
+	].
