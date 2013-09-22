@@ -91,9 +91,9 @@ sub _parse_switch
 		lex_read_space;
 	}
 	
-	if (lex_peek(2) eq 'if')
+	if (lex_peek(4) eq 'mode')
 	{
-		lex_read(2);
+		lex_read(4);
 		lex_read_space;
 		die "syntax error; expected open parenthesis" unless lex_peek eq '(';
 		lex_read(1);
@@ -312,7 +312,7 @@ Above I said that matching is performed by L<match::simple>. That was a lie.
 L<match::simple> is just the default. You can provide your own expression
 for matching:
 
-   switch ($number) if ($a > $b) {
+   switch ($number) mode ($a > $b) {
       case 1000:   say "greater than 1000";
       case 100:    say "greater than 100";
       case 10:     say "greater than 10";

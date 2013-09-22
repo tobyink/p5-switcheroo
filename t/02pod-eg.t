@@ -106,7 +106,7 @@ sub example5
 	no warnings 'once';
 	
 	my $number = shift;
-	switch ($number) if ($a > $b) {
+	switch ($number) mode ($a > $b) {
 		case 1000:   "greater than 1000";
 		case 100:    "greater than 100";
 		case 10:     "greater than 10";
