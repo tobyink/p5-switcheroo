@@ -238,6 +238,9 @@ the L<Switch> module (which is broken on recent versions of Perl anyway),
 less confusing than C<< use feature 'switch' >>, and more powerful than
 L<Switch::Plain> (though Switch::Plain is significantly faster).
 
+PerlX::Switch uses the Perl keyword API, which was introduced in Perl 5.14,
+so this module does not work on older releases of Perl.
+
 The basic grammar of the switch statement is as follows:
 
    switch ( TEST ) {
@@ -337,6 +340,13 @@ There's no fallthrough.
 =item switch
 
 =end trustme
+
+=head2 C<< match($x, $y) >>
+
+This module can also re-export the C<match> function from L<match::simple>,
+but not by default.
+
+   use PerlX::Switch qw( match switch );
 
 =head1 CAVEATS
 
