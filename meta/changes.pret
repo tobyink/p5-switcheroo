@@ -12,3 +12,10 @@
 		item "switch now internally uses tail calls (`goto`) when possible."^^Change;
 		item "Some improvements accessing @_ within switch blocks, but still... caveat invocator!"^^Change;
 	].
+
+`PerlX-Switch 0.003 cpan:TOBYINK`
+	issued  2013-09-22;
+	changeset [
+		item "Document the status of this distribution."^^Documentation;
+		item "The `if` option is now called `mode`."^^Change;
+	].

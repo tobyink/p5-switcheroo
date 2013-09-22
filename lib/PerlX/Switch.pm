@@ -5,7 +5,7 @@ use warnings;
 package PerlX::Switch;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.002';
+our $VERSION   = '0.003';
 our @EXPORT    = qw( switch );
 our @EXPORT_OK = qw( match );
 
