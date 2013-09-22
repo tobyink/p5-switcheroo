@@ -235,6 +235,10 @@ PerlX::Switch - yet another switch statement for Perl
 
 Experimental.
 
+No backwards compatibility between releases is guaranteed. Both the
+surface syntax and the internals of the module are liable to change
+at my whim.
+
 =head1 DESCRIPTION
 
 This module provides Perl with a switch statement. It's more reliable than
