@@ -4,3 +4,11 @@
 	issued  2013-09-21;
 	label   "Initial release".
 
+`PerlX-Switch 0.002 cpan:TOBYINK`
+	issued  2013-09-22;
+	changeset [
+		item "Document Perl 5.14 requirement."^^Documentation;
+		item "Document that the module re-exports `match`."^^Documentation;
+		item "switch now internally uses tail calls (`goto`) when possible."^^Change;
+		item "Some improvements accessing @_ within switch blocks, but still... caveat invocator!"^^Change;
+	].
