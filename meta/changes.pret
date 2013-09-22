@@ -11,6 +11,7 @@
 		item "Document that the module re-exports `match`."^^Documentation;
 		item "switch now internally uses tail calls (`goto`) when possible."^^Change;
 		item "Some improvements accessing @_ within switch blocks, but still... caveat invocator!"^^Change;
+		item "Include some test cases for @_ within switch blocks."^^Tests;
 	].
 
 `PerlX-Switch 0.003 cpan:TOBYINK`
