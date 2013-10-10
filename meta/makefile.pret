@@ -6,7 +6,7 @@
 	:runtime-requirement    [ :on "perl 5.014"^^:CpanId ];
 	:runtime-requirement    [ :on "Devel::Caller"^^:CpanId ];
 	:runtime-requirement    [ :on "Devel::LexAlias 0.05"^^:CpanId ];
-	:runtime-requirement    [ :on "Exporter 5.57"^^:CpanId ];
+	:runtime-requirement    [ :on "Exporter::Tiny 0.026"^^:CpanId ];
 	:runtime-requirement    [ :on "match::simple 0.004"^^:CpanId ];
 	:runtime-requirement    [ :on "PadWalker"^^:CpanId ];
 	:runtime-requirement    [ :on "Parse::Keyword 0.06"^^:CpanId ];

@@ -8,10 +8,11 @@ our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.005';
 our @EXPORT    = qw( switch );
 our @EXPORT_OK = qw( match );
+our @ISA       = qw( Exporter::Tiny );
 
 use Devel::Caller qw( caller_args );
 use Devel::LexAlias qw( lexalias );
-use Exporter qw( );
+use Exporter::Tiny qw( );
 use match::simple qw( match );
 use PadWalker qw( peek_my );
 use Parse::Keyword { switch => \&_parse_switch };
@@ -20,7 +21,7 @@ sub import
 {
 	my $pkg = caller;
 	eval qq[ package $pkg; our \$a; our \$b; ];
-	goto \&Exporter::import;
+	goto \&Exporter::Tiny::import;
 }
 
 sub switch
