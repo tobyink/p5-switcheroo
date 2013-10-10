@@ -400,6 +400,34 @@ but not by default.
 
    use Switcheroo qw( match switch );
 
+=head1 HINTS
+
+Switcheroo intentionally works nicely with L<Types::Standard> and other
+L<Type::Tiny>-based type libraries:
+
+   use Switcheroo;
+   use Types::Standard -types;
+   
+   switch ($value) {
+      case Int:       say "it's an integer";
+      case ArrayRef:  say "it's an array ref";
+      case HashRef:   say "it's a hash ref";
+   }
+
+It also plays well with L<Smart::Match>:
+
+   use Switcheroo;
+   use Smart::Match qw( range at_least );
+   
+   switch ($value) {
+      case range(0, 10):    say "small";
+      case range(11, 100):  say "medium";
+      case at_least(101):   say "large";
+   }
+
+This is all thanks to L<match::simple> which respects the overloaded
+C<< ~~ >> operator.
+
 =head1 CAVEATS
 
 Internally a lot of parts of code are passed around as coderefs, so
