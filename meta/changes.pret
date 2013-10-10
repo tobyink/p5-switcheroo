@@ -42,3 +42,12 @@
 		item "Sugar for regexps in case expressions."^^Change;
 		item "Export using Exporter::Tiny."^^Change;
 	].
+
+`Switcheroo 0.007 cpan:TOBYINK`
+	issued  2013-10-10;
+	label   "Bond, James Bond";
+	changeset [
+		item "Improve support for using @_ within switch blocks."^^Change;
+		item "More test cases for using @_ within switch blocks."^^Tests;
+		item "Test cases for closing over variables."^^Tests;
+	].

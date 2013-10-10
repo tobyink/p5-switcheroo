@@ -5,7 +5,7 @@ use warnings;
 package Switcheroo;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.006';
+our $VERSION   = '0.007';
 our @EXPORT    = qw( switch );
 our @EXPORT_OK = qw( match );
 our @ISA       = qw( Exporter::Tiny );
