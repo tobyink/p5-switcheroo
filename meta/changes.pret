@@ -35,3 +35,10 @@
 	changeset [
 		item "Rename PerlX::Switch -> Switcheroo."^^Packaging;
 	].
+
+`Switcheroo 0.006 cpan:TOBYINK`
+	issued  2013-10-10;
+	changeset [
+		item "Sugar for regexps in case expressions."^^Change;
+		item "Export using Exporter::Tiny."^^Change;
+	].
