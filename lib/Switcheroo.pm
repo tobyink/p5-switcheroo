@@ -53,19 +53,19 @@ sub switch
 	CASE: for my $case ( @$cases )
 	{
 		my ($type, $condition, $block) = @$case;
-		lexalias($condition, $_, $pad->{$_}) for keys %$pad;
 		
 		my $matched = 0;
 		if ($type eq 'block')
 		{
+			lexalias($condition, $_, $pad->{$_}) for keys %$pad;
 			$matched = !!$condition->(@args);
 		}
 		else
 		{
-			my @terms = $condition->();
-			TERM: for my $term (@terms)
+			TERM: for my $term (@$condition)
 			{
-				$match->($var, $term) ? (++$matched && last TERM) : next TERM;
+				lexalias($term, $_, $pad->{$_}) for keys %$pad;
+				$match->($var, $term->()) ? (++$matched && last TERM) : next TERM;
 			}
 		}
 		
@@ -155,6 +155,19 @@ sub _parse_switch
 	);
 }
 
+sub _munge_term
+{
+	if (lex_peek(1) eq '/')
+	{
+		lex_stuff('qr');
+	}
+	elsif (lex_peek(2) =~ /m\W/)
+	{
+		lex_read(1);
+		lex_stuff('qr');
+	}
+}
+
 sub _parse_case
 {
 	my ($expr, $type);
@@ -164,7 +177,7 @@ sub _parse_case
 	{
 		lex_read(1);
 		$type = 'term';
-		$expr = parse_fullexpr;
+		$expr = _parse_list_of_terms(\&_munge_term);
 		lex_read_space;
 		die "syntax error; expected close parenthesis" unless lex_peek eq ')';
 		lex_read(1);
@@ -180,18 +193,8 @@ sub _parse_case
 	
 	else
 	{
-#		if (lex_peek(1) eq '/')
-#		{
-#			lex_stuff('qr');
-#		}
-#		elsif (lex_peek(2) =~ /m\W/)
-#		{
-#			lex_read(1);
-#			lex_stuff('qr');
-#		}
-#		
 		$type = 'simple-term';
-		$expr = parse_fullexpr;
+		$expr = _parse_list_of_terms(\&_munge_term);
 		lex_read_space;
 	}
 	
@@ -201,6 +204,28 @@ sub _parse_case
 	
 	my $block = _parse_consequence();
 	return [ $type, $expr, $block ];
+}
+
+sub _parse_list_of_terms
+{
+	my $munge = shift;
+	
+	my @expr;
+	lex_read_space;
+	$munge->() if $munge;
+	push @expr, parse_termexpr;
+	lex_read_space;
+	
+	while (lex_peek eq ',')
+	{
+		lex_read(1);
+		lex_read_space;
+		$munge->() if $munge;
+		push @expr, parse_termexpr;
+		lex_read_space;
+	}
+	
+	return \@expr;
 }
 
 sub _parse_consequence
@@ -304,6 +329,14 @@ a boolean.
       case { $_ % 2 }:  say "an odd number";
       default:          say "an even number";
    }
+
+=head2 Regexp Expressions
+
+If this module encounters:
+
+   switch ($foo) { case /foo/: say "foo" }
+
+Don't worry; we know you meant C<< qr/foo/ >> and not C<< m/foo/ >>.
 
 =head2 Statement blocks
 

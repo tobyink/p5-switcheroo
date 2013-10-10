@@ -82,6 +82,26 @@ subtest "Expression blocks" => sub {
 	done_testing;
 };
 
+sub example7
+{
+	my $foo = shift;
+	switch ($foo) {
+		case /foo/:        "foo";
+		case 1, /bar/, 2:  "bar";
+		default:           "baz";
+	}
+}
+
+subtest "Regexp Expressions" => sub {
+	is(example7("foo"), 'foo');
+	is(example7("bar"), 'bar');
+	is(example7("baz"), 'baz');
+	is(example7("1"),   'bar');
+	is(example7("2"),   'bar');
+	is(example7(undef), 'baz');
+	done_testing;
+};
+
 sub example4
 {
 	my $number = shift;
