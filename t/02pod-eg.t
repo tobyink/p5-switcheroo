@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use Test::More;
 
-use PerlX::Switch;
+use Switcheroo;
 
 sub example1
 {

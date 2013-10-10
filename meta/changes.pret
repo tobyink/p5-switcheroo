@@ -1,10 +1,10 @@
 # This file acts as the project's changelog.
 
-`PerlX-Switch 0.001 cpan:TOBYINK`
+`Switcheroo 0.001 cpan:TOBYINK`
 	issued  2013-09-21;
 	label   "Initial release".
 
-`PerlX-Switch 0.002 cpan:TOBYINK`
+`Switcheroo 0.002 cpan:TOBYINK`
 	issued  2013-09-22;
 	changeset [
 		item "Document Perl 5.14 requirement."^^Documentation;
@@ -14,7 +14,7 @@
 		item "Include some test cases for @_ within switch blocks."^^Tests;
 	].
 
-`PerlX-Switch 0.003 cpan:TOBYINK`
+`Switcheroo 0.003 cpan:TOBYINK`
 	issued  2013-09-22;
 	changeset [
 		item "Document the status of this distribution."^^Documentation;
@@ -23,7 +23,7 @@
 		item "Prevent warnings from `$a` and `$b` using a little trick in `import`."^^Change;
 	].
 
-`PerlX-Switch 0.004 cpan:TOBYINK`
+`Switcheroo 0.004 cpan:TOBYINK`
 	issued  2013-09-22;
 	changeset [
 		item "Minor pod syntax fix."^^Bugfix;

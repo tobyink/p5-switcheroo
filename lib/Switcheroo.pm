@@ -2,7 +2,7 @@ use 5.014;
 use strict;
 use warnings;
 
-package PerlX::Switch;
+package Switcheroo;
 
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.004';
@@ -227,7 +227,7 @@ __END__
 
 =head1 NAME
 
-PerlX::Switch - yet another switch statement for Perl
+Switcheroo - yet another switch statement for Perl
 
 =head1 SYNOPSIS
 
@@ -253,7 +253,7 @@ the L<Switch> module (which is broken on recent versions of Perl anyway),
 less confusing than C<< use feature 'switch' >>, and more powerful than
 L<Switch::Plain> (though Switch::Plain is significantly faster).
 
-PerlX::Switch uses the Perl keyword API, which was introduced in Perl 5.14,
+Switcheroo uses the Perl keyword API, which was introduced in Perl 5.14,
 so this module does not work on older releases of Perl.
 
 The basic grammar of the switch statement is as follows:
@@ -362,7 +362,7 @@ There's no fallthrough.
 This module can also re-export the C<match> function from L<match::simple>,
 but not by default.
 
-   use PerlX::Switch qw( match switch );
+   use Switcheroo qw( match switch );
 
 =head1 CAVEATS
 
@@ -388,11 +388,13 @@ C<< @_ >>
 =head1 BUGS
 
 Please report any bugs to
-L<http://rt.cpan.org/Dist/Display.html?Queue=PerlX-Switch>.
+L<http://rt.cpan.org/Dist/Display.html?Queue=Switcheroo>.
 
 =head1 SEE ALSO
 
-L<Switch::Plain>.
+L<perlsyn/Switch Statements>, L<Switch>, L<Switch::Plain>.
+
+L<http://en.wikipedia.org/wiki/The_Burning_(Seinfeld)>.
 
 =head1 AUTHOR
 

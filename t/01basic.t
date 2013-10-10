@@ -4,7 +4,7 @@
 
 =head1 PURPOSE
 
-Test that PerlX::Switch compiles.
+Test that Switcheroo compiles.
 
 =head1 AUTHOR
 
@@ -24,7 +24,7 @@ use strict;
 use warnings;
 use Test::More;
 
-use_ok('PerlX::Switch');
+use_ok('Switcheroo');
 
 done_testing;
 

@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 BEGIN {
-	package PerlX::Switch;
-	$INC{'PerlX/Switch.pm'} = __FILE__;
+	package Switcheroo;
+	$INC{'Switcheroo.pm'} = __FILE__;
 	
 	use Exporter 'import';
 	our @EXPORT    = qw( switch );
@@ -202,7 +202,7 @@ BEGIN {
 };
 
 use v5.14;
-use PerlX::Switch;
+use Switcheroo;
 no warnings 'once';
 
 sub xyz

@@ -2,7 +2,7 @@
 
 @prefix : <http://ontologi.es/doap-deps#>.
 
-`PerlX-Switch`
+`Switcheroo`
 	:runtime-requirement    [ :on "perl 5.014"^^:CpanId ];
 	:runtime-requirement    [ :on "Devel::Caller"^^:CpanId ];
 	:runtime-requirement    [ :on "Devel::LexAlias 0.05"^^:CpanId ];
