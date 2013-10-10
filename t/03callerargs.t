@@ -37,5 +37,44 @@ is(switcher(0, 'weekday', 'weekend'), 'weekend');
 is(switcher($_, 'weekday', 'weekend'), 'weekday') for 1..5;
 is(switcher(6, 'weekday', 'weekend'), 'weekend');
 
+sub switcher2
+{
+	switch ($_[0]) {
+		case $_[1]:  1;
+		case $_[2]:  2;
+		default:     0;
+	}
+}
+
+is( switcher2('foo', 'foo', 'bar'), 1 );
+is( switcher2('bar', 'foo', 'bar'), 2 );
+is( switcher2('baz', 'foo', 'bar'), 0 );
+is( switcher2('foo', sub { 1 }, sub { 1 }), 1 );
+is( switcher2('foo', sub { 0 }, sub { 1 }), 2 );
+is( switcher2('foo', sub { 0 }, sub { 0 }), 0 );
+
+{
+	local $TODO = 'it would be awesome if this worked';
+	
+	sub switcher3
+	{
+		# caller_args(1) doesn't notice this modification to @_
+		my $dummy = shift(@_);
+		
+		switch ($_[0]) {
+			case $_[1]:  1;
+			case $_[2]:  2;
+			default:     0;
+		}
+	}
+	
+	is( switcher3('DUMMY', 'foo', 'foo', 'bar'), 1 );
+	is( switcher3('DUMMY', 'bar', 'foo', 'bar'), 2 );
+	is( switcher3('DUMMY', 'baz', 'foo', 'bar'), 0 );
+	is( switcher3('DUMMY', 'foo', sub { 1 }, sub { 1 }), 1 );
+	is( switcher3('DUMMY', 'foo', sub { 0 }, sub { 1 }), 2 );
+	is( switcher3('DUMMY', 'foo', sub { 0 }, sub { 0 }), 0 );
+}
+
 done_testing;
 

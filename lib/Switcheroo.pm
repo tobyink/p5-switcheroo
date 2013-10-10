@@ -27,6 +27,7 @@ sub import
 sub switch
 {
 	my ($pkg, $expr, $comparator, $cases, $default) = @_;
+	
 	my @args = @_ = caller_args(1);
 	
 	my $pad = peek_my(1);
@@ -62,10 +63,11 @@ sub switch
 		}
 		else
 		{
-			TERM: for my $term (@$condition)
+			TERM: for my $termexpr (@$condition)
 			{
-				lexalias($term, $_, $pad->{$_}) for keys %$pad;
-				$match->($var, $term->()) ? (++$matched && last TERM) : next TERM;
+				lexalias($termexpr, $_, $pad->{$_}) for keys %$pad;
+				my $term = $termexpr->(@args);
+				$match->($var, $term) ? (++$matched && last TERM) : next TERM;
 			}
 		}
 		
