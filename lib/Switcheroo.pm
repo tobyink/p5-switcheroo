@@ -10,7 +10,6 @@ our @EXPORT    = qw( switch );
 our @EXPORT_OK = qw( match );
 our @ISA       = qw( Exporter::Tiny );
 
-use Devel::Caller qw( caller_args );
 use Devel::LexAlias qw( lexalias );
 use Exporter::Tiny qw( );
 use match::simple qw( match );
@@ -28,7 +27,10 @@ sub switch
 {
 	my ($pkg, $expr, $comparator, $cases, $default) = @_;
 	
-	my @args = @_ = caller_args(1);
+	my @args = @_ = do {
+		package # replaces Devel::Caller::caller_args(1)
+		DB; my @x = caller(1); our @args;
+	};
 	
 	my $pad = peek_my(1);
 	my $var = defined($expr)
