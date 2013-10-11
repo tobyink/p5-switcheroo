@@ -10,10 +10,9 @@ our @EXPORT    = qw( switch );
 our @EXPORT_OK = qw( match );
 our @ISA       = qw( Exporter::Tiny );
 
-use Devel::LexAlias qw( lexalias );
 use Exporter::Tiny qw( );
 use match::simple qw( match );
-use PadWalker qw( peek_my );
+use PadWalker qw( peek_my set_closed_over );
 use Parse::Keyword { switch => \&_parse_switch };
 
 sub import
@@ -35,7 +34,7 @@ sub switch
 	my $pad = peek_my(1);
 	my $var = defined($expr)
 		? do {
-			lexalias($expr, $_, $pad->{$_}) for keys %$pad;
+			set_closed_over($expr, $pad);
 			$expr->(@args);
 		}
 		: $_;
@@ -60,26 +59,26 @@ sub switch
 		my $matched = 0;
 		if ($type eq 'block')
 		{
-			lexalias($condition, $_, $pad->{$_}) for keys %$pad;
+			set_closed_over($condition, $pad);
 			$matched = !!$condition->(@args);
 		}
 		else
 		{
 			TERM: for my $termexpr (@$condition)
 			{
-				lexalias($termexpr, $_, $pad->{$_}) for keys %$pad;
+				set_closed_over($termexpr, $pad);
 				my $term = $termexpr->(@args);
 				$match->($var, $term) ? (++$matched && last TERM) : next TERM;
 			}
 		}
 		
-		lexalias($block, $_, $pad->{$_}) for keys %$pad;
+		set_closed_over($block, $pad);
 		goto $block if $matched;
 	}
 	
 	if ($default)
 	{
-		lexalias($default, $_, $pad->{$_}) for keys %$pad;
+		set_closed_over($default, $pad);
 		goto $default;
 	}
 	return;

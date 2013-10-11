@@ -4,7 +4,6 @@
 
 `Switcheroo`
 	:runtime-requirement    [ :on "perl 5.014"^^:CpanId ];
-	:runtime-requirement    [ :on "Devel::LexAlias 0.05"^^:CpanId ];
 	:runtime-requirement    [ :on "Exporter::Tiny 0.026"^^:CpanId ];
 	:runtime-requirement    [ :on "match::simple 0.004"^^:CpanId ];
 	:runtime-requirement    [ :on "PadWalker"^^:CpanId ];
