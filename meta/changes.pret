@@ -51,3 +51,14 @@
 		item "More test cases for using @_ within switch blocks."^^Tests;
 		item "Test cases for closing over variables."^^Tests;
 	].
+
+`Switcheroo 0.008 cpan:TOBYINK`
+	issued  2013-10-11;
+	changeset [
+		item "Document usage of Switcheroo with Smart::Match."^^Documentation;
+		item "Document usage of Switcheroo with Types::Standard."^^Documentation;
+		item "Test cases for using Switcheroo with Smart::Match."^^Tests;
+		item "Test cases for using Switcheroo with Types::Standard."^^Tests;
+		item "Drop dependency on Devel::LexAlias - allow PadWalker to do it all!"^^Change;
+		item "Drop dependency on Devel::Caller - there are other methods to access your caller's @_ array which are no more unreliable."^^Change;
+	].
